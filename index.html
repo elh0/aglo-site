@@ -203,8 +203,8 @@ var CH=[
  {t0:"rise+60",t1:"rise+200",k:"home",h:"Just the sky.",p:"And the five apps you need. The sky is the real one over your city, right now."},
  {t0:"rise+220",t1:"rise+300",k:"layouts",h:"Six ways to lay it out.",p:"Pick one, and the sky lines up across every widget."},
  {t0:"rise+320",t1:"rise+350",k:"search",h:"Everything else is off your home screen.",p:"Still there if you search for it."},
- {t0:"rise+370",t1:"rise+390",k:"shield",h:"Some apps ask first.",p:"You pick which ones, and what each one costs."},
- {t0:"rise+410",t1:"rise+440",k:"reps",h:"Ten press-ups for Instagram.",p:"The camera counts on your phone. Nothing is recorded."},
+ {t0:"rise+370",t1:"rise+390",k:"shield",h:"Some apps ask first.",p:"You pick which ones, and what it takes to open each."},
+ {t0:"rise+410",t1:"rise+440",k:"reps",h:"Ten press-ups for Instagram.",p:"Or fifteen squats. The front camera counts them on your phone and records nothing."},
  {t0:"set-70",t1:"set-30",k:"breath",h:"Or three slow breaths.",p:"Hold your thumb on the sky. It brightens as you breathe in."},
  {t0:"set-10",t1:"set+20",k:"given",h:"Say no, and it counts.",p:"Each app you leave closed gives you twelve minutes back."},
  {t0:"set+180",t1:"set+200",k:"locked",h:"Quiet after nine.",p:"Lock apps on a schedule. Five minutes is always there for emergencies."}
@@ -260,7 +260,7 @@ function breathScr(m,u){var b=Math.min(3,Math.floor(u*3.4)),ph=(u*3.4)%1,inn=ph<
   return t+'</div>'}
 function lockedScr(m){var t=skyHTML(-14,.5)+'<div class="ly">'+sbar(m)+'<div class="ctr"><div class="bg2">TikTok is resting until 07:00.</div><div class="sm">Locked 21:00 to 07:00. You chose this.</div></div><div class="bot"><span class="pl">Back to home</span><span class="pl" style="background:none;opacity:.75">Emergency unlock, 5 minutes</span></div></div>';return t}
 /* real screens from the app, layered under the drawn ones */
-var SHOTS=["home-fullStack-day","home-thumbStack-day","home-timeAtFoot-day","home-appsCorner-day","home-smallsApps-day","home-appsOnly-day","breathe-dusk","breathe-inhale","breathe-hold","home-fullStack-dusk"];
+var SHOTS=["home-fullStack-day","home-thumbStack-day","home-timeAtFoot-day","home-appsCorner-day","home-smallsApps-day","home-appsOnly-day","breathe-dusk","breathe-inhale","breathe-hold","home-fullStack-dusk","tasks","pressups","squats","nightlock","emergency"];
 scr.innerHTML='<div class="shots">'+SHOTS.map(function(n){return '<img src="img/'+n+'.webp" alt="" decoding="async" data-n="'+n+'">'}).join("")+'</div><div id="hl"></div><div class="island"></div>';
 var HL=document.getElementById("hl"),IMG={};[].forEach.call(scr.querySelectorAll(".shots img"),function(im){IMG[im.dataset.n]=im});
 function shots(o){for(var n in IMG){var v=o[n]||0;IMG[n].style.opacity=v;IMG[n].style.visibility=v?"visible":"hidden"}}
@@ -270,11 +270,11 @@ function phone(m){
   if(c.k==="home"){key="h";o["home-fullStack-day"]=1}
   else if(c.k==="layouts"){key="L";o=xf(SHOTS.slice(0,6),u)}
   else if(c.k==="search"){var k=Math.min(9,Math.floor(u*12));key="s"+k;html=searchScr(m,k)}
-  else if(c.k==="shield"){var pr=u>.7;key="sh"+pr;html=shieldScr(m,pr)}
-  else if(c.k==="reps"){var r=Math.min(10,Math.floor(u*11.5));key="r"+r;html=repsScr(m,r)}
+  else if(c.k==="shield"){key="sh";o.tasks=1}
+  else if(c.k==="reps"){key="r";o=xf(["pressups","squats"],u)}
   else if(c.k==="breath"){key="b";o=xf(["breathe-dusk","breathe-inhale","breathe-hold"],u)}
   else if(c.k==="given"){var on=u>.25;key="g"+on;o["home-fullStack-dusk"]=1;if(on)html='<div class="toast fade">12 minutes given back</div>'}
-  else {key="l"+mm;html=lockedScr(m)}
+  else {key="l";o=xf(["nightlock","emergency"],u)}
   shots(o);
   if(key!==lastKey){HL.innerHTML=html;lastKey=key}
   if(i!==lastCap){lastCap=i;cap.innerHTML='<div class="in"><div class="k mono"><span id="capt"></span><span class="prog">'+CH.map(function(_,j){return '<i class="'+(j===i?"on":"")+'"></i>'}).join("")+'</span></div></div><div class="in" style="display:grid;gap:10px"><h2>'+c.h+'</h2><p>'+c.p+'</p></div>'}
