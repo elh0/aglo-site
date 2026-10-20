@@ -94,6 +94,8 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap}
 .scr .toast{position:absolute;left:50%;bottom:13cqh;transform:translateX(-50%);background:rgba(11,11,10,.8);color:#F2F2EF;border-radius:999px;padding:1.2cqh 4cqw;font-size:3.5cqw;white-space:nowrap}
 .scr .fade{animation:fin .35s ease-out}
 @keyframes fin{from{opacity:.0;transform:translateY(1.2cqh)}to{opacity:1;transform:none}}
+.scr .toast.fade{animation-name:fint}
+@keyframes fint{from{opacity:0;transform:translate(-50%,1.2cqh)}to{opacity:1;transform:translateX(-50%)}}
 .scr .shots img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .scr #hl{position:absolute;inset:0}.scr #hl:empty{display:none}
 .cap{width:100%;max-width:520px;display:grid;gap:10px;text-align:left;min-height:9.5em}
