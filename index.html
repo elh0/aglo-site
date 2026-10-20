@@ -25,7 +25,7 @@ main{position:relative;z-index:1}
 section{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:96px 16px 40px;gap:18px}
 .big{font-size:clamp(40px,8.4vw,132px);line-height:.96;letter-spacing:-.04em;margin:0;max-width:15ch;font-weight:400}
 .hero{justify-content:space-between}
-.hero .name{flex:1;margin:0}.hero .name .wm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
+.hero .mid{flex:1;display:grid;place-content:center;text-align:center;gap:14px}.hero .name{margin:0;font-weight:400;font-size:clamp(22px,2.6vw,36px);letter-spacing:-.02em;line-height:1.15}.hero .name .wm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
 .corners{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
 .corners a{font-size:clamp(28px,6vw,92px);letter-spacing:-.04em;line-height:1}
 .corners small{display:block;margin-bottom:8px}
@@ -127,7 +127,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap}
 <main id="top">
   <section class="hero" data-t="now">
     <div></div>
-    <h1 class="name"><span class="wm" aria-label="aglo">a gl<i></i></span></h1>
+    <div class="mid"><h1 class="name"><span class="wm" aria-label="aglo">a gl<i></i></span>A quiet home screen. Just the sky.</h1><p class="mono" style="margin:0"><span data-live>--:--</span> · sunset <span data-sunset>--:--</span></p></div>
     <div class="corners">
       <a href="#get"><small class="mono">iPhone · Soon</small>App →</a>
       <a href="#how" style="text-align:right"><small class="mono">Scroll through a day</small>How ↓</a>
@@ -302,7 +302,7 @@ function tick(){document.getElementById("clock").textContent=hm(nowMins())}
 tick();setInterval(tick,15000);update();
 
 /* live bits inside the app moments */
-function uiTick(){var m=nowMins(),S=solar(720);document.querySelectorAll("[data-live]").forEach(function(e){e.textContent=hm(m)});document.querySelectorAll("[data-riseset]").forEach(function(e){e.textContent="Rise "+hm(S.rise)+" · Set "+hm(S.set)})}
+function uiTick(){var m=nowMins(),S=solar(720);document.querySelectorAll("[data-live]").forEach(function(e){e.textContent=hm(m)});document.querySelectorAll("[data-sunset]").forEach(function(e){e.textContent=hm(S.set)});document.querySelectorAll("[data-riseset]").forEach(function(e){e.textContent="Rise "+hm(S.rise)+" · Set "+hm(S.set)})}
 uiTick();setInterval(uiTick,15000);
 </script>
 <script src="signup.js" defer></script>
