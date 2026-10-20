@@ -37,6 +37,16 @@ section{min-height:100svh;display:flex;flex-direction:column;justify-content:fle
 .card .p{font-size:clamp(28px,3.4vw,44px);letter-spacing:-.03em;line-height:1}
 .cta{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 22px;background:var(--ink);color:#121211;font-size:18px;width:max-content;}
 body.light .cta{color:#F7F5F0}
+.su{display:grid;gap:12px;width:100%;max-width:560px}
+.su-row{display:flex;gap:8px;flex-wrap:wrap}
+.su input[type=email]{flex:1 1 220px;min-width:0;height:52px;padding:0 22px;border-radius:999px;border:0;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:inherit;font:400 16px var(--sans)}
+.su input[type=email]::placeholder{color:currentColor;opacity:.6}
+.su input[type=email]:focus{outline:1px solid currentColor;outline-offset:0}
+.su .cta{border:0;cursor:pointer;font-family:var(--sans);height:52px;padding:0 22px}
+.su .cta:disabled{opacity:.6}
+.su-done{min-height:1.3em;margin:0}
+.su-done a{text-decoration:underline}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-end}
 footer nav{display:flex;gap:18px;flex-wrap:wrap}
 @media (max-width:600px){header .r a.hide{display:none}.corners small{display:none}.corners a{font-size:36px}}
@@ -142,7 +152,11 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap}
       <div class="card"><span class="mono">Aglo</span><span class="p">Free</span><span class="note">Guard three apps.</span></div>
       <div class="card"><span class="mono">Aglo Plus</span><span class="p">£19.99 a year</span><span class="note">Every app, every task, schedules. Seven days free.</span></div>
     </div>
-    <a class="cta" href="#get" aria-disabled="true">Coming soon to the App Store</a>
+    <form class="su" data-signup data-app="aglo" data-list="launch" data-done="Thanks. One email on launch day, nothing else." novalidate>
+      <span class="mono">Coming soon to the App Store</span>
+      <div class="su-row"><label class="sr" for="su-em">Your email</label><input id="su-em" type="email" name="email" inputmode="email" autocomplete="email" placeholder="you@email.com" required><input class="sr" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="cta" type="submit">Tell me when it's out</button></div>
+      <p class="su-done mono" role="status" aria-live="polite"></p>
+    </form>
     <footer class="mono" style="margin-top:48px">
       <span>© 2026 Eltio Studio Ltd</span>
       <nav><a href="privacy/">Privacy</a><a href="support/">Help</a><a href="mailto:hello@eltio.studio">hello@eltio.studio</a></nav>
@@ -289,4 +303,5 @@ tick();setInterval(tick,15000);update();
 function uiTick(){var m=nowMins(),S=solar(720);document.querySelectorAll("[data-live]").forEach(function(e){e.textContent=hm(m)});document.querySelectorAll("[data-riseset]").forEach(function(e){e.textContent="Rise "+hm(S.rise)+" · Set "+hm(S.set)})}
 uiTick();setInterval(uiTick,15000);
 </script>
+<script src="signup.js" defer></script>
 </body></html>
