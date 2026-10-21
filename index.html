@@ -28,9 +28,9 @@ section{min-height:100svh;display:flex;flex-direction:column;justify-content:fle
 .hero .mid{flex:1;display:grid;place-content:center;text-align:center;gap:14px}.hero .name{margin:0;font-weight:400;font-size:clamp(22px,2.6vw,36px);letter-spacing:-.02em;line-height:1.15}.hero .name .wm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
 .breath{position:fixed;inset:0;z-index:6;display:grid;place-content:center;justify-items:center;gap:28px;pointer-events:none;transition:opacity .9s}
 .breath.gone{opacity:0}
-.breath i{display:block;width:min(44vw,200px);aspect-ratio:1;border-radius:50%;border:1px solid currentColor;background:rgba(255,255,255,.07);transform:scale(.45);transition:transform 2.6s cubic-bezier(.45,0,.55,1)}
+.breath i{display:block;width:min(44vw,200px);aspect-ratio:1;border-radius:50%;border:1px solid currentColor;background:rgba(255,255,255,.07);transform:scale(.45);transition:transform 1.3s cubic-bezier(.45,0,.55,1)}
 .breath.in i{transform:scale(1)}
-.breath p{margin:0;transition:opacity .4s}
+.breath p{margin:0;transition:opacity .2s}
 header,.hero .mid,.hero .corners{transition:opacity 1s}
 body.intro header,body.intro .hero .mid,body.intro .hero .corners{opacity:0}
 .corners{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
@@ -322,13 +322,13 @@ uiTick();setInterval(uiTick,15000);
 if(INTRO)(function(){
   var m=nowMins(),s=solar(m),to=s.el,from=Math.min(to-10,-12),x=10+Math.max(0,Math.min(1,(m-s.rise)/(s.set-s.rise)))*80;
   var o=document.createElement("div");o.className="breath";o.setAttribute("aria-hidden","true");o.innerHTML='<i></i><p class="mono">Breathe in</p>';
-  document.body.appendChild(o);var lab=o.querySelector("p"),t0=performance.now(),RISE=2600,raf2=0,T=[],done=false;
+  document.body.appendChild(o);var lab=o.querySelector("p"),t0=performance.now(),RISE=1300,raf2=0,T=[],done=false;
   paintAt(from,x);
   function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
   function frame(now){var t=Math.min(1,(now-t0)/RISE);paintAt(from+(to-from)*ease(t),x);if(t<1)raf2=requestAnimationFrame(frame)}
   requestAnimationFrame(function(){o.classList.add("in");t0=performance.now();raf2=requestAnimationFrame(frame)});
-  T.push(setTimeout(function(){lab.style.opacity=0;setTimeout(function(){lab.textContent="Breathe out";lab.style.opacity=1},400);o.classList.remove("in")},RISE+200));
-  T.push(setTimeout(finish,RISE+200+2400));
+  T.push(setTimeout(function(){lab.style.opacity=0;setTimeout(function(){lab.textContent="Breathe out";lab.style.opacity=1},200);o.classList.remove("in")},RISE+100));
+  T.push(setTimeout(finish,RISE+100+1200));
   function finish(){if(done)return;done=true;T.forEach(clearTimeout);cancelAnimationFrame(raf2);update();
     o.classList.add("gone");document.body.classList.remove("intro");setTimeout(function(){o.remove()},900);
     ["wheel","touchstart","keydown","pointerdown"].forEach(function(e){removeEventListener(e,finish)})}
