@@ -26,6 +26,13 @@ section{min-height:100svh;display:flex;flex-direction:column;justify-content:fle
 .big{font-size:clamp(40px,8.4vw,132px);line-height:.96;letter-spacing:-.04em;margin:0;max-width:15ch;font-weight:400}
 .hero{justify-content:space-between}
 .hero .mid{flex:1;display:grid;place-content:center;text-align:center;gap:14px}.hero .name{margin:0;font-weight:400;font-size:clamp(22px,2.6vw,36px);letter-spacing:-.02em;line-height:1.15}.hero .name .wm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
+.breath{position:fixed;inset:0;z-index:6;display:grid;place-content:center;justify-items:center;gap:28px;pointer-events:none;transition:opacity .9s}
+.breath.gone{opacity:0}
+.breath i{display:block;width:min(44vw,200px);aspect-ratio:1;border-radius:50%;border:1px solid currentColor;background:rgba(255,255,255,.07);transform:scale(.45);transition:transform 2.6s cubic-bezier(.45,0,.55,1)}
+.breath.in i{transform:scale(1)}
+.breath p{margin:0;transition:opacity .4s}
+header,.hero .mid,.hero .corners{transition:opacity 1s}
+body.intro header,body.intro .hero .mid,body.intro .hero .corners{opacity:0}
 .corners{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
 .corners a{font-size:clamp(28px,6vw,92px);letter-spacing:-.04em;line-height:1}
 .corners small{display:block;margin-bottom:8px}
@@ -116,6 +123,9 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap}
 </style><link rel="icon" href="icon.svg" type="image/svg+xml">
 </head>
 <body>
+<script>/* the opening breath: once a visit, only from the top of the page */
+var INTRO=(function(){try{if(sessionStorage.getItem("aglo-intro"))return false;sessionStorage.setItem("aglo-intro","1")}catch(e){}return scrollY<10&&!location.hash&&!matchMedia("(prefers-reduced-motion:reduce)").matches})();
+if(INTRO)document.body.classList.add("intro");</script>
 <div class="bg" aria-hidden="true"><div class="sky" id="sky"></div><div class="sun" id="sun"></div><div class="grain"></div></div>
 
 <header>
@@ -206,9 +216,12 @@ function label(m){var s=solar(m);if(Math.abs(m-s.rise)<40)return "first light";i
 secs.forEach(function(s){var st=s.querySelector("[data-stamp]");if(st){var m=toM(s.dataset.t);st.textContent=hm(m)+" · "+label(m)}});
 
 function paint(m){
-  var s=solar(m),f=field(s.el),x=10+Math.max(0,Math.min(1,(m-s.rise)/(s.set-s.rise)))*80;
+  var s=solar(m);paintAt(s.el,10+Math.max(0,Math.min(1,(m-s.rise)/(s.set-s.rise)))*80);
+}
+function paintAt(el,x){
+  var f=field(el);
   sky.style.background=f.bg;
-  sun.style.left=x+"%";sun.style.top=(62-Math.min(s.el,50)*.9)+"%";sun.style.opacity=s.el<-2?0:1;
+  sun.style.left=x+"%";sun.style.top=(62-Math.min(el,50)*.9)+"%";sun.style.opacity=el<-2?0:1;
   document.body.style.color=f.light?"#121211":"#F7F5F0";
   document.body.classList.toggle("light",f.light);
   document.documentElement.style.setProperty("--ink",f.light?"#121211":"#F7F5F0");
@@ -304,6 +317,23 @@ tick();setInterval(tick,15000);update();
 /* live bits inside the app moments */
 function uiTick(){var m=nowMins(),S=solar(720);document.querySelectorAll("[data-live]").forEach(function(e){e.textContent=hm(m)});document.querySelectorAll("[data-sunset]").forEach(function(e){e.textContent=hm(S.set)});document.querySelectorAll("[data-riseset]").forEach(function(e){e.textContent="Rise "+hm(S.rise)+" · Set "+hm(S.set)})}
 uiTick();setInterval(uiTick,15000);
+
+/* the site takes one breath for you: the sky rises to now on the way in, then the page opens */
+if(INTRO)(function(){
+  var m=nowMins(),s=solar(m),to=s.el,from=Math.min(to-10,-12),x=10+Math.max(0,Math.min(1,(m-s.rise)/(s.set-s.rise)))*80;
+  var o=document.createElement("div");o.className="breath";o.setAttribute("aria-hidden","true");o.innerHTML='<i></i><p class="mono">Breathe in</p>';
+  document.body.appendChild(o);var lab=o.querySelector("p"),t0=performance.now(),RISE=2600,raf2=0,T=[],done=false;
+  paintAt(from,x);
+  function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+  function frame(now){var t=Math.min(1,(now-t0)/RISE);paintAt(from+(to-from)*ease(t),x);if(t<1)raf2=requestAnimationFrame(frame)}
+  requestAnimationFrame(function(){o.classList.add("in");t0=performance.now();raf2=requestAnimationFrame(frame)});
+  T.push(setTimeout(function(){lab.style.opacity=0;setTimeout(function(){lab.textContent="Breathe out";lab.style.opacity=1},400);o.classList.remove("in")},RISE+200));
+  T.push(setTimeout(finish,RISE+200+2400));
+  function finish(){if(done)return;done=true;T.forEach(clearTimeout);cancelAnimationFrame(raf2);update();
+    o.classList.add("gone");document.body.classList.remove("intro");setTimeout(function(){o.remove()},900);
+    ["wheel","touchstart","keydown","pointerdown"].forEach(function(e){removeEventListener(e,finish)})}
+  ["wheel","touchstart","keydown","pointerdown"].forEach(function(e){addEventListener(e,finish,{passive:true})});
+})();
 </script>
 <script src="signup.js" defer></script>
 </body></html>
